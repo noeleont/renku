@@ -37,10 +37,8 @@ spec:
       - name: RENKU_TEST_DOCS_RUN
         value: '{{ .Values.tests.parameters.docsRun }}'
       {{ end }}
-      {{ if .Values.tests.parameters.extantProject }}
       - name: RENKU_TEST_EXTANT_PROJECT
-        value: '{{ .Values.tests.parameters.extantProject }}'
-      {{ end }}
+        value: "bad-project/bad-project"
       {{ if .Values.tests.parameters.anonProject }}
       - name: RENKU_TEST_ANON_PROJECT
         value: '{{ .Values.tests.parameters.anonProject }}'
@@ -70,10 +68,8 @@ spec:
     volumeMounts:
       - mountPath: /dev/shm
         name: dshm
-    {{ if .Values.tests.parameters.testTarget -}}
     args:
-      - '{{ .Values.tests.parameters.testTarget }}'
-    {{ end }}
+      - "*ExistingProjectSpec*"
     resources:
       requests:
         memory: "4G"
