@@ -230,7 +230,7 @@ postgresql:
 
   image:
     repository: bitnami/postgresql
-    tag: 9.6
+    tag: 11.9.0
 
   persistence:
     ## We use the defaults here, but they will probably be modified for most deployments.
@@ -258,7 +258,7 @@ gitlab:
   image:
   #   pullPolicy: IfNotPresent
     repository: gitlab/gitlab-ce
-    tag: 11.9.11-ce.0
+    tag: 13.9.3-ce.0
 
   ## automatically log in to gitlab
   oauth:
