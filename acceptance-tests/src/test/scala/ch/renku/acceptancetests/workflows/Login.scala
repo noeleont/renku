@@ -96,6 +96,7 @@ trait Login {
     verify browserAt CliTokenLoginPage
 
     detachedCommand write CliTokenLoginPage.cliToken.getText
+
   }
 
   private def `log in to Renku using provider`: LoginType = {
