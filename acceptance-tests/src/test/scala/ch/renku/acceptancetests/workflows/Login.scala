@@ -18,11 +18,14 @@
 
 package ch.renku.acceptancetests.workflows
 
+import ch.renku.acceptancetests.model.users.UserCredentials
 import ch.renku.acceptancetests.pages.LoginPage.oidcButton
 import ch.renku.acceptancetests.pages._
-import ch.renku.acceptancetests.tooling.AcceptanceSpec
+import ch.renku.acceptancetests.tooling.{AcceptanceSpec, console}
+import ch.renku.acceptancetests.tooling.console._
 import ch.renku.acceptancetests.workflows.LoginType._
 
+import java.nio.file.Path
 import scala.annotation.tailrec
 import scala.concurrent.duration._
 
@@ -67,6 +70,30 @@ trait Login {
       verify browserAt LandingPage
       verify userCanSee LandingPage.loginButton sleep (1 second)
     }
+  }
+
+  def `log in to Renku from CLI`(implicit userCredentials: UserCredentials): Unit = {
+    implicit val workingDirectory: Path = createTempFolder
+
+    Given("User is not logged in")
+
+    When("User logs in to Renku from CLI")
+    console %> c"renku login ${renkuBaseUrl}"
+
+    Then("CLI prompts for token") // TODO How to enter token to CLI
+
+    `try few times before giving up` { _ =>
+      sleep(2 seconds)
+      verify browserSwitchedTo LoginPage
+    }
+
+    maybeLoginType = Some {
+      if (userCredentials.useProvider) `log in to Renku using provider`
+      else `log in to Renku directly`
+    }
+
+    Then("they should get into a CLI Token Page")
+    verify browserAt CliTokenLoginPage
   }
 
   private def `log in to Renku using provider`: LoginType = {
