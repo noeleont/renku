@@ -27,6 +27,10 @@ class CliLoginSpec extends AcceptanceSpec with Login {
 
   Scenario("User can log in from CLI") {
 
+    // TODO Make sure that a browser exists in the image -> probably true or otherwise ChromeDriver won't run
+    // TODO Define a 'BROWSER' env var with possible chrome values so that webbrowser module picks up the right one:
+    // export BROWSER=google-chrome:chrome:chromium:chromium-browser:???
+
 //    `setup renku CLI`  // FIXME uncomment this when running on CI
 
     `log in to Renku from CLI`
