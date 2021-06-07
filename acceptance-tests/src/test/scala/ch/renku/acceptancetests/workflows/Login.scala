@@ -21,8 +21,8 @@ package ch.renku.acceptancetests.workflows
 import ch.renku.acceptancetests.model.users.UserCredentials
 import ch.renku.acceptancetests.pages.LoginPage.oidcButton
 import ch.renku.acceptancetests.pages._
-import ch.renku.acceptancetests.tooling.{AcceptanceSpec, console}
 import ch.renku.acceptancetests.tooling.console._
+import ch.renku.acceptancetests.tooling.{AcceptanceSpec, console}
 import ch.renku.acceptancetests.workflows.LoginType._
 
 import java.nio.file.Path
@@ -78,7 +78,7 @@ trait Login {
     Given("User is not logged in")
 
     When("User logs in to Renku from CLI")
-    console %> c"renku login ${renkuBaseUrl}"
+    val detachedCommand = console %>&> c"renku login $renkuBaseUrl"
 
     Then("CLI prompts for token") // TODO How to enter token to CLI
 
@@ -94,6 +94,8 @@ trait Login {
 
     Then("they should get into a CLI Token Page")
     verify browserAt CliTokenLoginPage
+
+    detachedCommand write CliTokenLoginPage.cliToken.getText
   }
 
   private def `log in to Renku using provider`: LoginType = {
@@ -148,7 +150,7 @@ trait Login {
 
   private def `register new user with Renku`: LoginType = {
     When("user opens registration form")
-    LoginPage openRegistrationForm;
+    LoginPage openRegistrationForm
 
     And("registers")
     RegisterNewUserPage registerNewUserWith userCredentials

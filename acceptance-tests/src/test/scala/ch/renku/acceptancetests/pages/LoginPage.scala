@@ -196,7 +196,7 @@ object CliTokenLoginPage
 
   override def pageReadyElement(implicit webDriver: WebDriver): Option[WebElement] = Some(cliToken)
 
-  private def cliToken(implicit webDriver: WebDriver): WebElement = eventually {
+  def cliToken(implicit webDriver: WebDriver): WebElement = eventually {
     find(tagName("code")) getOrElse fail(
       s"CLI token with tag <code> not found on page ${webDriver.getTitle}"
     )
