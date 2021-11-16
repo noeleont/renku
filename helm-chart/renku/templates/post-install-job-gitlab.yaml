@@ -21,6 +21,8 @@ spec:
         chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     spec:
       restartPolicy: Never
+      initContainers:
+        {{- include "certificates.initContainer" . | nindent 8 }}
       containers:
         - name: configure-gitlab
           image: "postgres:9.6"
@@ -50,4 +52,5 @@ spec:
         - name: init
           configMap:
             name: {{ template "renku.fullname" . }}
+        {{- include "certificates.volumes" . | nindent 8 }}
 {{- end }}
