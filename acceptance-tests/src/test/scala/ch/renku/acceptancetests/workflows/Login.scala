@@ -80,7 +80,7 @@ trait Login {
     When("User logs in to Renku from CLI")
     val detachedCommand = console %>&> c"renku login $renkuBaseUrl"
 
-    Then("CLI prompts for token") // TODO How to enter token to CLI
+    Then("CLI prompts for token")
 
     `try few times before giving up` { _ =>
       sleep(2 seconds)

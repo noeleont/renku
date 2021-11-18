@@ -18,8 +18,11 @@
 
 package ch.renku.acceptancetests
 
-import ch.renku.acceptancetests.tooling.AcceptanceSpec
+import ch.renku.acceptancetests.tooling.console.{CommandOps, rootWorkDirectory}
+import ch.renku.acceptancetests.tooling.{AcceptanceSpec, console}
 import ch.renku.acceptancetests.workflows._
+
+import java.nio.file.Path
 
 /** Login to Renku from CLI.
   */
@@ -29,14 +32,26 @@ class CliLoginSpec extends AcceptanceSpec with Login {
 
     // TODO Make sure that a browser exists in the image -> probably true or otherwise ChromeDriver won't run
     // TODO Define a 'BROWSER' env var with possible chrome values so that webbrowser module picks up the right one:
-    // export BROWSER=google-chrome:chrome:chromium:chromium-browser:???
+    // export BROWSER=google-chrome:google-chrome-stable:chrome:chromium:chromium-browser
 
 //    `setup renku CLI`  // FIXME uncomment this when running on CI
 
     `log in to Renku from CLI`
 
+    When("the reading renku token from the global config file")
+    val token = `read renku token`
+    Then("token has a value")
+
+
+
 //    `log out of Renku` // FIXME there is no logout button on the CLI Token Page. Is it a problem if we don't log out?
 
     // TODO Verify that token was saved to ~/.renku/renku.ini
+  }
+
+  private def `read renku token`: String = {
+    implicit val workFolder: Path = rootWorkDirectory
+
+    console %%> c"renku config show http.mohammad.dev.renku.ch"
   }
 }
