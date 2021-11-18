@@ -26,7 +26,7 @@ import java.nio.file.Path
 
 /** Login to Renku from CLI.
   */
-class CliLoginSpec extends AcceptanceSpec with Login with PrivateProject with Settings {
+class CliLoginSpec extends AcceptanceSpec with CLIConfiguration with Login with Project with Settings {
 
   Scenario("User can log in from CLI") {
 
@@ -34,9 +34,7 @@ class CliLoginSpec extends AcceptanceSpec with Login with PrivateProject with Se
     // TODO Define a 'BROWSER' env var with possible chrome values so that webbrowser module picks up the right one:
     // export BROWSER=google-chrome:google-chrome-stable:chrome:chromium:chromium-browser
 
-    // `setup renku CLI`  // FIXME uncomment this when running on CI
-
-//    `create, continue or open a project`
+    `setup renku CLI`
 
     `log in to Renku from CLI`
 
@@ -54,26 +52,22 @@ class CliLoginSpec extends AcceptanceSpec with Login with PrivateProject with Se
     //assert(token.trim.isEmpty, "Token is not empty: $token")
   }
 
-//  Scenario("User can log in from CLI in a Renku project") {
-//    // `setup renku CLI`  // FIXME uncomment this when running on CI
-//
-//    val projectUrl = `find project Http URL in the Settings Page`
-//    implicit val projectDirectory: Path = `clone and migrate a project`(projectUrl)
-//
-//    `log in to Renku from CLI project`
-//  }
+  Scenario("User can log in from CLI in a Renku project") {
+    `setup renku CLI`
 
-  private def `read renku token`: String = {
-    implicit val workFolder: Path = rootWorkDirectory
+    `log in to Renku`
 
-    console %%> c"renku config show http.mohammad.dev.renku.ch"
-  }
+    `create, continue or open a project`
 
-  private def `prepare repository`(): Unit = {
     val projectUrl = `find project Http URL in the Settings Page`
     implicit val projectDirectory: Path = `clone and migrate a project`(projectUrl)
 
     `log in to Renku from CLI project`
   }
 
+  private def `read renku token`: String = {
+    implicit val workFolder: Path = rootWorkDirectory
+
+    console %%> c"renku config show http.mohammad.dev.renku.ch"
+  }
 }
