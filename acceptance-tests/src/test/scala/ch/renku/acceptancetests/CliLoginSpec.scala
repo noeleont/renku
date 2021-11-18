@@ -26,7 +26,7 @@ import java.nio.file.Path
 
 /** Login to Renku from CLI.
   */
-class CliLoginSpec extends AcceptanceSpec with Login {
+class CliLoginSpec extends AcceptanceSpec with Login with PrivateProject with Settings {
 
   Scenario("User can log in from CLI") {
 
@@ -34,24 +34,46 @@ class CliLoginSpec extends AcceptanceSpec with Login {
     // TODO Define a 'BROWSER' env var with possible chrome values so that webbrowser module picks up the right one:
     // export BROWSER=google-chrome:google-chrome-stable:chrome:chromium:chromium-browser
 
-//    `setup renku CLI`  // FIXME uncomment this when running on CI
+    // `setup renku CLI`  // FIXME uncomment this when running on CI
+
+//    `create, continue or open a project`
 
     `log in to Renku from CLI`
 
-    When("the reading renku token from the global config file")
-    val token = `read renku token`
-    Then("token has a value")
+    When("Reading renku token from the global config file")
+    var token = `read renku token`
+    Then("Token has a value")
+    assert(token.trim.nonEmpty, "Token is empty")
 
-
-
-//    `log out of Renku` // FIXME there is no logout button on the CLI Token Page. Is it a problem if we don't log out?
-
-    // TODO Verify that token was saved to ~/.renku/renku.ini
+    // Uncomment these lines once https://github.com/SwissDataScienceCenter/renku-python/issues/2472 is done
+    //When("User logs out of Renku from CLI")
+    //`log out of Renku from CLI`()
+    //And("Reading renku token from the global config file")
+    //token = `read renku token`
+    //Then("Token is empty")
+    //assert(token.trim.isEmpty, "Token is not empty: $token")
   }
+
+//  Scenario("User can log in from CLI in a Renku project") {
+//    // `setup renku CLI`  // FIXME uncomment this when running on CI
+//
+//    val projectUrl = `find project Http URL in the Settings Page`
+//    implicit val projectDirectory: Path = `clone and migrate a project`(projectUrl)
+//
+//    `log in to Renku from CLI project`
+//  }
 
   private def `read renku token`: String = {
     implicit val workFolder: Path = rootWorkDirectory
 
     console %%> c"renku config show http.mohammad.dev.renku.ch"
   }
+
+  private def `prepare repository`(): Unit = {
+    val projectUrl = `find project Http URL in the Settings Page`
+    implicit val projectDirectory: Path = `clone and migrate a project`(projectUrl)
+
+    `log in to Renku from CLI project`
+  }
+
 }

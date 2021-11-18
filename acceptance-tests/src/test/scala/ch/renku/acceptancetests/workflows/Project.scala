@@ -18,12 +18,14 @@
 
 package ch.renku.acceptancetests.workflows
 
-import ch.renku.acceptancetests.model.projects.{ProjectDetails, Template, Visibility}
+import ch.renku.acceptancetests.model.projects.{ProjectDetails, ProjectUrl, Template, Visibility}
 import ch.renku.acceptancetests.pages._
-import ch.renku.acceptancetests.tooling.AcceptanceSpec
+import ch.renku.acceptancetests.tooling.console.{CommandOps, PathOps, createTempFolder}
+import ch.renku.acceptancetests.tooling.{AcceptanceSpec, console}
 import org.scalatest.BeforeAndAfterAll
 
 import java.lang.System.getProperty
+import java.nio.file.Path
 import scala.concurrent.duration._
 
 trait PrivateProject extends Project with BeforeAndAfterAll {
@@ -127,6 +129,18 @@ trait Project extends RemoveProject with BeforeAndAfterAll {
     verify that projectPage.Files.Info.title is projectDetails.readmeTitle
     And("the readme content")
     verify that projectPage.Files.Info.content contains "This is a Renku project"
+  }
+
+  /** Clone and migrate a project and return the repository's path
+    */
+  protected def `clone and migrate a project`(projectUrl: ProjectUrl): Path = {
+    val tempFolder = createTempFolder
+    implicit val workFolder: Path = tempFolder / projectPage.projectSlug
+
+    console.%>(c"git clone ${projectUrl add authorizationToken}")(tempFolder, userCredentials)
+    console %> c"renku migrate"
+
+    workFolder
   }
 
   private lazy val maybeExtantProject: Option[ProjectDetails] =

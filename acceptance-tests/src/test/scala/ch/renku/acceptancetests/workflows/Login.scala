@@ -75,10 +75,26 @@ trait Login {
   def `log in to Renku from CLI`(implicit userCredentials: UserCredentials): Unit = {
     implicit val workingDirectory: Path = createTempFolder
 
-    Given("User is not logged in")
+    `log in from CLI`
+  }
 
+  def `log in to Renku from CLI project`(implicit projectDirectory: Path, userCredentials:  UserCredentials): Unit = {
+    `log in from CLI`(projectDirectory, userCredentials, argument = "--git")
+  }
+
+  def `log out of Renku from CLI`(): Unit = {
+    implicit val workingDirectory: Path = createTempFolder
+
+    console %> c"renku logout"
+  }
+
+  private def `log in from CLI`(implicit
+      projectDirectory: Path,
+      userCredentials:  UserCredentials,
+      argument:         String = ""
+  ): Unit = {
     When("User logs in to Renku from CLI")
-    val detachedCommand = console %>&> c"renku login $renkuBaseUrl"
+    val detachedCommand = console %>&> c"renku login $argument $renkuBaseUrl"
 
     Then("CLI prompts for token")
 
