@@ -39,11 +39,11 @@ class CliLoginSpec extends AcceptanceSpec with CLIConfiguration with Login with 
     `log in to Renku from CLI`
 
     When("Reading renku token from the global config file")
-    var token = `read renku token`
+    val token = `read renku token`
     Then("Token has a value")
     assert(token.trim.nonEmpty, "Token is empty")
 
-    // Uncomment these lines once https://github.com/SwissDataScienceCenter/renku-python/issues/2472 is done
+    // Uncomment these lines once https://github.com/SwissDataScienceCenter/renku-python/issues/2472 is deployed
     //When("User logs out of Renku from CLI")
     //`log out of Renku from CLI`()
     //And("Reading renku token from the global config file")
@@ -68,6 +68,6 @@ class CliLoginSpec extends AcceptanceSpec with CLIConfiguration with Login with 
   private def `read renku token`: String = {
     implicit val workFolder: Path = rootWorkDirectory
 
-    console %%> c"renku config show http.mohammad.dev.renku.ch"
+    console %%> c"renku config show http.$renkuBaseUrl"
   }
 }

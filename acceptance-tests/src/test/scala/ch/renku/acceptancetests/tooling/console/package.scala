@@ -30,8 +30,6 @@ import scala.sys.process.{BasicIO, Process}
 
 package object console {
 
-
-
   /** Execute a command, throws an exception if the command fails
     */
   def %>(command: Command)(implicit workPath: Path, userCredentials: UserCredentials): Unit =
@@ -39,7 +37,7 @@ package object console {
 
   def %>&>(command: Command)(implicit workPath: Path, userCredentials: UserCredentials): DetachedCommand = {
     val detachedCommand = new DetachedCommand()
-    val process = Process(command.toString)
+    val process         = Process(command.toString)
     process run BasicIO.standard(inputFn(detachedCommand)(_))
     detachedCommand
   }
@@ -75,12 +73,11 @@ package object console {
   final class DetachedCommand() {
     val inputString = new LinkedBlockingQueue[String](1)
 
-    def write(content: String): Unit ={
+    def write(content: String): Unit =
       inputString.put(content)
-    }
   }
 
-  private def inputFn(detachedCommand: DetachedCommand)(stdIn: OutputStream): Unit ={
+  private def inputFn(detachedCommand: DetachedCommand)(stdIn: OutputStream): Unit = {
     val writer = new BufferedWriter(new OutputStreamWriter(stdIn))
     writer.write(detachedCommand.inputString.take() + "\n\n")
     writer.flush()

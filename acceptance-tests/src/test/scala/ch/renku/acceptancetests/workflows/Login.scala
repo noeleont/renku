@@ -78,9 +78,8 @@ trait Login {
     `log in from CLI`
   }
 
-  def `log in to Renku from CLI project`(implicit projectDirectory: Path, userCredentials:  UserCredentials): Unit = {
+  def `log in to Renku from CLI project`(implicit projectDirectory: Path, userCredentials: UserCredentials): Unit =
     `log in from CLI`(projectDirectory, userCredentials, argument = "--git")
-  }
 
   def `log out of Renku from CLI`(): Unit = {
     implicit val workingDirectory: Path = createTempFolder

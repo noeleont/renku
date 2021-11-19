@@ -44,6 +44,6 @@ object TestsDefaults {
         .fold(error => throw new Exception(error.prettyPrint()), identity)
     else
       TestsDefaults(
-        env = Some("https://mohammad.dev.renku.ch") // TODO restore default
+        env = Some("https://dev.renku.ch")
       )
 }
